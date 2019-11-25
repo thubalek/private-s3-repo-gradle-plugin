@@ -1,6 +1,6 @@
 # Private S3 Repo Gradle Plugin
 
-[![CircleCI](https://circleci.com/gh/thubalek/private-s3-repo-gradle-plugin.svg?style=svg)](https://circleci.com/gh/thubalek/private-s3-repo-gradle-plugin)
+[![CircleCI](https://circleci.com/gh/thubalek/private-s3-repo-gradle-plugin/tree/master.svg?style=svg)](https://circleci.com/gh/thubalek/private-s3-repo-gradle-plugin/tree/master)
 [![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/net/hubalek/gradle/s3privaterepo/net.hubalek.gradle.s3privaterepo/maven-metadata.xml.svg?colorB=007ec6&label=gradle-plugin)](https://plugins.gradle.org/plugin/net.hubalek.gradle.s3privaterepo)
 
 This plugin configures Amazon AWS S3 private repo for your projects. Simply either put configuration properties
