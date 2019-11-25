@@ -1,5 +1,8 @@
 # Private S3 Repo Gradle Plugin
 
+[![CircleCI](https://circleci.com/gh/thubalek/private-s3-repo-gradle-plugin.svg?style=svg)](https://circleci.com/gh/thubalek/private-s3-repo-gradle-plugin)
+[![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/net/hubalek/gradle/s3privaterepo/net.hubalek.gradle.s3privaterepo/maven-metadata.xml.svg?colorB=007ec6&label=gradle-plugin)](https://plugins.gradle.org/plugin/net.hubalek.gradle.s3privaterepo)
+
 This plugin configures Amazon AWS S3 private repo for your projects. Simply either put configuration properties
 to `gradle.properties` file or set environment variables (useful for CI servers).
 
@@ -7,14 +10,14 @@ Supported properties (replace with your own credentials):
 
 In `~/.gradle/gradle.properties`
 ```
-s3Repo=s3://my-mave-repo/repo
+s3Repo=s3://my-private-maven-repo/repo
 s3AccessKey=HKHDHDKKH59AHAHS
 s3SecretKey=THIoNTUtEserecteRYSIDwaRbiLIumPeRIdEr
 ```
 
 or environment variables:
 ```
-export S3_REPO="s3://my-mave-repo/repo"
+export S3_REPO="s3://my-private-maven-repo/repo"
 export S3_ACCESS_KEY="HKHDHDKKH59AHAHS"
 export S3_SECRET_KEY="THIoNTUtEserecteRYSIDwaRbiLIumPeRIdEr"
 ```
@@ -26,7 +29,7 @@ To use this plugin you have to do following:
 
 ```
 plugins {
-    id 'net.hubalek.gradle.s3privaterepo' version '0.0.2'
+    id 'net.hubalek.gradle.s3privaterepo' version '0.0.X' // replace 0.0.X with latest version of the plugin
 }
 ```
 
