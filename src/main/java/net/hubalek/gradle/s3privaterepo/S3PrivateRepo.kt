@@ -7,22 +7,25 @@ import org.gradle.api.credentials.AwsCredentials
 import java.net.URI
 
 class S3PrivateRepo : Plugin<Project> {
+
     override fun apply(project: Project) {
         for (module in project.allprojects) {
-            val s3Repo = module.setupProperty("s3Repo", "S3_REPO")
-            val s3AccessKey = module.setupProperty("s3AccessKey", "S3_ACCESS_KEY")
-            val s3SecretKey = module.setupProperty("s3SecretKey", "S3_SECRET_KEY")
-            module.buildscript.repositories.maven {
-                setupRepo(it, s3Repo, s3AccessKey, s3SecretKey)
-            }
-            module.repositories.maven {
-                setupRepo(it, s3Repo, s3AccessKey, s3SecretKey)
-            }
-            module.extensions.extraProperties.set("s3PrivateRepo", module.repositories.maven {
-                setupRepo(it, s3Repo, s3AccessKey, s3SecretKey)
-            })
+            module.beforeEvaluate {
+                val s3Repo = module.setupProperty("s3Repo", "S3_REPO")
+                val s3AccessKey = module.setupProperty("s3AccessKey", "S3_ACCESS_KEY")
+                val s3SecretKey = module.setupProperty("s3SecretKey", "S3_SECRET_KEY")
+                module.buildscript.repositories.maven {
+                    setupRepo(it, s3Repo, s3AccessKey, s3SecretKey)
+                }
+                module.repositories.maven {
+                    setupRepo(it, s3Repo, s3AccessKey, s3SecretKey)
+                }
+                module.extensions.extraProperties.set("s3PrivateRepo", module.repositories.maven {
+                    setupRepo(it, s3Repo, s3AccessKey, s3SecretKey)
+                })
 
-            println("S3 Private repo $s3Repo configured for project ${module.name}")
+                println("S3 Private repo $s3Repo configured for project ${module.name}")
+            }
         }
     }
 
