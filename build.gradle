@@ -1,7 +1,7 @@
 plugins {
     id 'java-gradle-plugin'
-    id 'com.gradle.plugin-publish' version '0.12.0'
-    id 'org.jetbrains.kotlin.jvm' version '1.4.10'
+    alias(libs.plugins.gradle.plugin.publish)
+    alias(libs.plugins.kotlin.jvm)
     id 'groovy'
 }
 
@@ -19,30 +19,31 @@ group = 'net.hubalek.gradle.s3privaterepo'
 version = getVersionAccordingTheTag()
 
 gradlePlugin {
+    website = 'https://github.com/thubalek/private-s3-repo-gradle-plugin'
+    vcsUrl = 'https://github.com/thubalek/private-s3-repo-gradle-plugin.git'
+
     plugins {
         placeholdersPlugin {
             id = 'net.hubalek.gradle.s3privaterepo'
             displayName = "S3 Private Repo Gradle Plugin"
             description = "Allows to add Amazon S3 private repo just according system properties or environment variables."
             implementationClass = 'net.hubalek.gradle.s3privaterepo.S3PrivateRepo'
+            tags = ["s3", "aws", "credentials"]
         }
     }
-}
-
-pluginBundle {
-    website = 'https://github.com/thubalek/private-s3-repo-gradle-plugin'
-    vcsUrl = 'https://github.com/thubalek/private-s3-repo-gradle-plugin.git'
-    tags = ["s3", "aws", "credentials"]
 }
 
 repositories {
     mavenCentral()
 }
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(libs.versions.java.get() as Integer)
+    }
 }
+
 compileKotlin {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = libs.versions.java.get()
     }
 }

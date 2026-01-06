@@ -9,24 +9,35 @@ import java.net.URI
 class S3PrivateRepo : Plugin<Project> {
 
     override fun apply(project: Project) {
-        for (module in project.allprojects) {
-            module.beforeEvaluate {
-                val s3Repo = module.setupProperty("s3Repo", "S3_REPO")
-                val s3AccessKey = module.setupProperty("s3AccessKey", "S3_ACCESS_KEY")
-                val s3SecretKey = module.setupProperty("s3SecretKey", "S3_SECRET_KEY")
-                module.buildscript.repositories.maven {
-                    setupRepo(it, s3Repo, s3AccessKey, s3SecretKey)
-                }
-                module.repositories.maven {
-                    setupRepo(it, s3Repo, s3AccessKey, s3SecretKey)
-                }
-                module.extensions.extraProperties.set("s3PrivateRepo", module.repositories.maven {
-                    setupRepo(it, s3Repo, s3AccessKey, s3SecretKey)
-                })
+        // Suppress AWS SDK v1 deprecation warning from Gradle's internal S3 client
+        // Gradle 8.x still uses AWS SDK v1 for S3 repository support
+        System.setProperty("aws.java.v1.disableDeprecationAnnouncement", "true")
 
-                println("S3 Private repo $s3Repo configured for project ${module.name}")
-            }
+        // Configure root project immediately
+        configureProject(project)
+
+        // Configure all subprojects
+        project.subprojects.forEach { subproject ->
+            configureProject(subproject)
         }
+    }
+
+    private fun configureProject(module: Project) {
+        val s3Repo = module.setupProperty("s3Repo", "S3_REPO")
+        val s3AccessKey = module.setupProperty("s3AccessKey", "S3_ACCESS_KEY")
+        val s3SecretKey = module.setupProperty("s3SecretKey", "S3_SECRET_KEY")
+
+        module.buildscript.repositories.maven {
+            setupRepo(it, s3Repo, s3AccessKey, s3SecretKey)
+        }
+        module.repositories.maven {
+            setupRepo(it, s3Repo, s3AccessKey, s3SecretKey)
+        }
+        module.extensions.extraProperties.set("s3PrivateRepo", module.repositories.maven {
+            setupRepo(it, s3Repo, s3AccessKey, s3SecretKey)
+        })
+
+        println("S3 Private repo $s3Repo configured for project ${module.name}")
     }
 
     private fun setupRepo(it: MavenArtifactRepository,
@@ -45,7 +56,7 @@ class S3PrivateRepo : Plugin<Project> {
     private fun propertyOrEnvVar(project: Project, p: String, e: String): String {
         val projectProperty = project.findProperty(p)
         if (projectProperty is String? && !projectProperty.isNullOrBlank()) {
-            return projectProperty.toString()
+            return projectProperty
         }
         val systemProperties = System.getProperties()
         return if (systemProperties.containsKey(p)) {
